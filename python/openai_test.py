@@ -1,24 +1,21 @@
-#import openai
 import os
 import openai
+from openai import OpenAI
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
-
-print(openai.api_key)
-
-
-
-# 创建一个 GPT-3 请求
-response = openai.Completion.create(
-    model="text-davinci-003",
-    prompt="Please provide some tips for beginner Python programmers.",
-    temperature=0.7,
-    max_tokens=50,
-    top_p=1,
-    frequency_penalty=0,
-    presence_penalty=0
+client = OpenAI(
+    api_key=os.getenv("OPENAI_API_KEY"),
 )
+print(OpenAI.api_key)
 
-# 输出 GPT-3 的回答
-print(response.choices[0].text.strip())
 
+def new_completion(prompt, model="gpt-3.5-turbo"):
+    messages = [{"role": "user", "content": prompt}]
+    completion = client.chat.completions.create(model=model,
+                                                messages=messages, 
+)
+    return completion.choices[0].text.strip()
+    
+
+prompt = "Say this is a test."
+response = new_completion(prompt)
+print(response)
